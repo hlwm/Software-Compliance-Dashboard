@@ -387,8 +387,8 @@ tr.total-row td{font-weight:700;background:var(--surface2);color:var(--blue)}
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
       <div style="display:flex;gap:12px"><div style="font-size:22px;flex-shrink:0">📥</div><div><div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:4px">Step 1 — Download WS1/SCCM reports</div><div style="font-size:11px;color:var(--muted);line-height:1.7">Each month, download the software inventory Excel files from <strong style="color:var(--text-dim)">Workspace ONE (WS1)</strong> and <strong style="color:var(--text-dim)">SCCM</strong> for every office. Each file must contain sheets: <code style="background:var(--surface2);padding:1px 5px;border-radius:3px">SCCM-WinOS</code>, <code style="background:var(--surface2);padding:1px 5px;border-radius:3px">WS1-WinOS</code>, <code style="background:var(--surface2);padding:1px 5px;border-radius:3px">WS1-MacOS</code>.</div></div></div>
       <div style="display:flex;gap:12px"><div style="font-size:22px;flex-shrink:0">📤</div><div><div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:4px">Step 2 — Upload all files at once</div><div style="font-size:11px;color:var(--muted);line-height:1.7">Drag & drop or click to select <strong style="color:var(--text-dim)">all office Excel files together</strong>. The dashboard automatically merges, deduplicates by serial number, and classifies each device by office and department.</div></div></div>
-      <div style="display:flex;gap:12px"><div style="font-size:22px;flex-shrink:0">🔬</div><div><div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:4px">Step 3 — Add Software Tracker (optional)</div><div style="font-size:11px;color:var(--muted);line-height:1.7">For scientific software compliance, go to <strong style="color:var(--text-dim)">Sci SW &amp; Licensing</strong> and upload your <strong style="color:var(--text-dim)">Licensed SW Excel</strong> from the SharePoint Software Tracker. Matched by Staff ID + software name.</div></div></div>
-      <div style="display:flex;gap:12px"><div style="font-size:22px;flex-shrink:0">📊</div><div><div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:4px">What the dashboard shows</div><div style="font-size:11px;color:var(--muted);line-height:1.7"><strong style="color:var(--text-dim)">Dashboard</strong> — risk KPIs, prohibited &amp; blacklisted apps, AV gaps.<br><strong style="color:var(--text-dim)">Sci SW &amp; Licensing</strong> — installed vs licensed scientific software per staff.<br><strong style="color:var(--text-dim)">Data</strong> — full device &amp; software list, searchable and exportable.</div></div></div>
+      <div style="display:flex;gap:12px"><div style="font-size:22px;flex-shrink:0">🔬</div><div><div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:4px">Step 3 — Add Software Tracker (optional)</div><div style="font-size:11px;color:var(--muted);line-height:1.7">For scientific software compliance, go to <strong style="color:var(--text-dim)">SW Inventory &amp; Licensing</strong> and upload your <strong style="color:var(--text-dim)">Licensed SW Excel</strong> from the SharePoint Software Tracker. Matched by Staff ID + software name.</div></div></div>
+      <div style="display:flex;gap:12px"><div style="font-size:22px;flex-shrink:0">📊</div><div><div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:4px">What the dashboard shows</div><div style="font-size:11px;color:var(--muted);line-height:1.7"><strong style="color:var(--text-dim)">Dashboard</strong> — risk KPIs, prohibited &amp; blacklisted apps, AV gaps.<br><strong style="color:var(--text-dim)">SW Inventory &amp; Licensing</strong> — installed vs licensed scientific software per staff.<br><strong style="color:var(--text-dim)">Data</strong> — full device &amp; software list, searchable and exportable.</div></div></div>
     </div>
   </div>
 </div>
@@ -410,8 +410,8 @@ tr.total-row td{font-weight:700;background:var(--surface2);color:var(--blue)}
 
   <!-- NAV — Option C: Two-level -->
   <div class="nav-top" id="nav-top">
-    <button class="nav-top-btn active" id="ntb-dashboard" onclick="switchTopNav('dashboard',this)">📊 Dashboard</button>
-    <button class="nav-top-btn" id="ntb-scicomp" onclick="switchTopNav('scicomp',this)">🔬 Sci SW & Licensing</button>
+    <button class="nav-top-btn active" id="ntb-scicomp" onclick="switchTopNav('scicomp',this)">🔬 SW Inventory & Licensing</button>
+    <button class="nav-top-btn" id="ntb-dashboard" onclick="switchTopNav('dashboard',this)">🛡 SW Compliance</button>
     <button class="nav-top-btn" id="ntb-data" onclick="switchTopNav('data',this)">🗄 Data</button>
   </div>
   <div class="nav-sub" id="nav-sub">
@@ -420,7 +420,7 @@ tr.total-row td{font-weight:700;background:var(--surface2);color:var(--blue)}
   <!-- keep .nav-tabs hidden (switchTab still needs it for .active tracking) -->
   <div class="nav-tabs" style="display:none">
     <button class="tab active" id="tab-btn-overview"    onclick="switchTab('overview',this)">Overview</button>
-    <button class="tab"        id="tab-btn-scientific"  onclick="switchTab('scientific',this)">Scientific SW</button>
+    <button class="tab"        id="tab-btn-scientific"  onclick="switchTab('scientific',this)">SW Inventory</button>
     <button class="tab"        id="tab-btn-inventory"   onclick="switchTab('inventory',this)">Inventory Compare</button>
     <button class="tab"        id="tab-btn-compare"     onclick="switchTab('compare',this)">Installed vs Registered</button>
     <button class="tab"        id="tab-btn-assets"      onclick="switchTab('assets',this)">Asset List</button>
@@ -440,7 +440,7 @@ tr.total-row td{font-weight:700;background:var(--surface2);color:var(--blue)}
         <div style="display:flex;gap:24px;flex-wrap:wrap">
           <div style="display:flex;gap:8px"><span style="font-size:15px">📥</span><div><div style="font-weight:700;color:var(--text-dim);margin-bottom:2px">Data Sources</div><div><strong style="color:var(--text-dim)">WS1</strong> &amp; <strong style="color:var(--text-dim)">SCCM</strong> — monthly exports per office · sheets: <code style="background:var(--surface2);padding:1px 5px;border-radius:3px">SCCM-WinOS</code> <code style="background:var(--surface2);padding:1px 5px;border-radius:3px">WS1-WinOS</code> <code style="background:var(--surface2);padding:1px 5px;border-radius:3px">WS1-MacOS</code></div></div></div>
           <div style="display:flex;gap:8px"><span style="font-size:15px">⚙️</span><div><div style="font-weight:700;color:var(--text-dim);margin-bottom:2px">Consolidation</div><div>Files merged &amp; <strong style="color:var(--text-dim)">deduplicated by serial number</strong>. Devices classified by office &amp; department via fund code. WS1 + SCCM records unified per device.</div></div></div>
-          <div style="display:flex;gap:8px"><span style="font-size:15px">🔬</span><div><div style="font-weight:700;color:var(--text-dim);margin-bottom:2px">Sci SW Compliance</div><div>Upload <strong style="color:var(--text-dim)">Licensed SW Excel</strong> from SharePoint Software Tracker under <strong style="color:var(--text-dim)">Sci SW &amp; Licensing</strong> tab. Matched by Staff ID + software name.</div></div></div>
+          <div style="display:flex;gap:8px"><span style="font-size:15px">🔬</span><div><div style="font-weight:700;color:var(--text-dim);margin-bottom:2px">Sci SW Compliance</div><div>Upload <strong style="color:var(--text-dim)">Licensed SW Excel</strong> from SharePoint Software Tracker under <strong style="color:var(--text-dim)">SW Inventory &amp; Licensing</strong> tab. Matched by Staff ID + software name.</div></div></div>
         </div>
       </div>
     </div>
@@ -608,7 +608,7 @@ tr.total-row td{font-weight:700;background:var(--surface2);color:var(--blue)}
       <div class="scroll-wrap">
         <table><thead><tr>
           <th>Staff ID</th><th>Office</th><th>Computer Name</th><th>Platform</th>
-          <th>Ownership</th><th>Risk Score</th><th>AV</th><th>Prohibited Apps</th><th>VPN</th><th>Scientific SW</th><th>Source</th>
+          <th>Ownership</th><th>Risk Score</th><th>AV</th><th>Prohibited Apps</th><th>VPN</th><th>SW Inventory</th><th>Source</th>
         </tr></thead><tbody id="tbody-assets"></tbody></table>
       </div>
     </div>
@@ -662,7 +662,7 @@ tr.total-row td{font-weight:700;background:var(--surface2);color:var(--blue)}
       </div>
       <div style="display:flex;gap:8px;align-items:center">
         <button class="btn" onclick="openSciManagePanel()" style="font-size:11px;padding:6px 14px;border-radius:8px;border:1px solid #1e3a5c;background:rgba(56,189,248,0.07);color:#38bdf8;cursor:pointer;font-weight:600">⚙ Manage Software</button>
-        <button class="btn sci-export" onclick="exportSciCSV()">⬇ Export Scientific SW CSV</button>
+        <button class="btn sci-export" onclick="exportSciCSV()">⬇ Export SW Inventory CSV</button>
       </div>
     </div>
 
@@ -679,7 +679,7 @@ tr.total-row td{font-weight:700;background:var(--surface2);color:var(--blue)}
         <div style="position:relative;height:220px"><canvas id="sci-bar-chart"></canvas></div>
       </div>
       <div class="chart-card" style="border-color:#1e3a3a">
-        <h3>Scientific SW distribution by office</h3>
+        <h3>SW Inventory distribution by office</h3>
         <div id="sci-office-wrap" style="position:relative;height:220px"><canvas id="sci-office-chart"></canvas></div>
       </div>
     </div>
@@ -719,7 +719,7 @@ tr.total-row td{font-weight:700;background:var(--surface2);color:var(--blue)}
     <!-- ── TOP BAR ── -->
     <div class="inv-topbar">
       <div class="inv-topbar-left">
-        <h3>📋 Scientific SW Compliance</h3>
+        <h3>📋 SW Inventory Compliance</h3>
         <p style="font-size:12px;color:var(--text-dim)">
           <span style="color:#2dd4bf">● Installed</span> — detected from WS1/SCCM ·
           <span style="color:#38bdf8">● Registered</span> — your Licensed SW Excel ·
@@ -1348,6 +1348,8 @@ async function runConsolidation(){
     `${pendingFiles.length} office file${pendingFiles.length>1?'s':''} · ${rawRows.length.toLocaleString()} software rows · ${devices.length.toLocaleString()} unique devices`;
 
   renderAll(); // assets and raw tabs render on demand when clicked
+  // Also render sci tab since it's now the default first tab
+  renderSciTab();
 }
 
 // ── BUILD DEVICE PROFILES ─────────────────────────────────────
@@ -1399,7 +1401,7 @@ function buildDevices(){
         d.blacklistedVPNs.push(swName);
     }
 
-    // Scientific SW detection
+    // SW Inventory detection
     // Apps with scanAllGroups:true scan every software group; others restrict to "Others" only
     if(swName){
       const inSciGroup = swGroupLower==='others' || swGroupLower==='standard';
@@ -1588,7 +1590,7 @@ ${v} (${pct}%)`;
     onHover:(evt,els)=>{ evt.native.target.style.cursor = els.length?'pointer':'default'; }
   });
 
-  // chart-sci removed (duplicate of Scientific SW tab Devices per app chart)
+  // chart-sci removed (duplicate of SW Inventory tab Devices per app chart)
 
   // Insights
   const ins=[];
@@ -1695,7 +1697,7 @@ function renderAssets(){
 
   // Filter pills by status
   const pills=document.getElementById('pills-assets');
-  const statuses=[{k:'ALL',l:'All'},{k:'AV',l:'AV gap'},{k:'SW',l:'Prohibited'},{k:'BOTH',l:'Dual risk'},{k:'VPN',l:'VPN'},{k:'SCI',l:'Scientific SW'},{k:'OK',l:'Compliant'}];
+  const statuses=[{k:'ALL',l:'All'},{k:'AV',l:'AV gap'},{k:'SW',l:'Prohibited'},{k:'BOTH',l:'Dual risk'},{k:'VPN',l:'VPN'},{k:'SCI',l:'SW Inventory'},{k:'OK',l:'Compliant'}];
   if(pills) pills.innerHTML=statuses.map(s=>`<span class="fpill ${assetFilter===s.k?'active':''}" onclick="setAssetFilter('${s.k}',this)">${s.l}</span>`).join('');
 
   if(assetFilter==='AV') devs=devs.filter(d=>!d.hasAV);
@@ -1819,7 +1821,7 @@ const MODAL_DEFS={
     row:d=>{const rs=riskScore(d),col=rs>=60?'#ef4444':rs>=20?'#f59e0b':'#22c55e';
       const p=[];if(!d.hasAV)p.push('<span class="badge badge-av">No AV</span>');if(d.badApps.length)p.push(`<span class="badge badge-sw">${d.badApps[0]}</span>`);if(hasVPN(d))p.push('<span class="badge badge-vpn">VPN</span>');
       return `<td><strong>${d.nusId}</strong></td><td>${d.office}</td><td style="font-size:11px">${d.name}</td><td style="font-size:11px">${d.platform}</td><td style="color:${col};font-weight:700">${rs}</td><td>${p.join(' ')||'<span class="badge badge-ok">Compliant</span>'}</td>`;}},
-  SCI:{title:'Scientific Software Detected',filter:d=>hasSci(d),cols:['Staff ID','Name','Office','Platform','Scientific SW','Ownership'],
+  SCI:{title:'Scientific Software Detected',filter:d=>hasSci(d),cols:['Staff ID','Name','Office','Platform','SW Inventory','Ownership'],
     row:d=>{const sciKeys=Object.keys(d.sciSW);
       return `<td><strong>${d.nusId}</strong></td><td style="font-size:11px">${d.name||'—'}</td><td>${d.office}</td><td style="font-size:11px">${d.platform}</td><td>${sciKeys.map(id=>{const a=SCI_APPS.find(x=>x.id===id);return`<span class="badge badge-sci" style="color:${a?.color};border-color:${a?.color}33;background:${a?.color}15;margin-right:3px">${a?a.label:id}</span>`;}).join('')}</td><td style="font-size:11px">${d.ownership}</td>`;;}}
 };
@@ -1898,7 +1900,7 @@ function exportRawCSV(){
   dlCSV(csv,`SW_Raw_${yyyymm()}.csv`);
 }
 function exportDevicesCSV(devs,name){
-  const cols=['Staff ID','Office','Computer Name','Platform','Ownership','Risk Score','Status','Has AV','Prohibited Apps','VPN Issues','Scientific SW','Source'];
+  const cols=['Staff ID','Office','Computer Name','Platform','Ownership','Risk Score','Status','Has AV','Prohibited Apps','VPN Issues','SW Inventory','Source'];
   let csv=cols.join(',')+'\n';
   devs.forEach(d=>{
     const sciStr=Object.keys(d.sciSW).map(id=>SCI_APPS.find(a=>a.id===id)?.label||id).join('; ');
@@ -1971,7 +1973,7 @@ function renderSciTab(){
 
   // ── Stats bar
   document.getElementById('sci-stats-bar').innerHTML=`
-    <div class="sci-stat"><div class="sci-stat-val">${totalSciDevices}</div><div class="sci-stat-label">Devices w/ Sci SW</div></div>
+    <div class="sci-stat"><div class="sci-stat-val">${totalSciDevices}</div><div class="sci-stat-label">Devices w/ SW</div></div>
     <div class="sci-stat"><div class="sci-stat-val">${totalSciInstances}</div><div class="sci-stat-label">Total instances</div></div>
     <div class="sci-stat"><div class="sci-stat-val">${uniqueOffices}</div><div class="sci-stat-label">Offices affected</div></div>
     <div class="sci-stat"><div class="sci-stat-val">${data.length?Math.round(totalSciDevices/data.length*100):0}%</div><div class="sci-stat-label">% of fleet</div></div>
@@ -2158,7 +2160,7 @@ function exportSciCSVData(rows){
 
 
 // ── INVENTORY COMPARISON ─────────────────────────────────────
-// Installed side  = Scientific SW devices from devices[] array
+// Installed side  = SW Inventory devices from devices[] array
 // Inventory side  = uploaded Licensed SW Excel
 // Match key       = normStr(nusId) + '|' + normAppLabel(software)
 // Secondary check = office + department fields
@@ -3494,15 +3496,12 @@ function exportCmpCSV(){
 
 // ── Option C: Two-level nav ───────────────────────────────────
 const TOP_NAV_MAP = {
-  dashboard:  [
-    {id:'overview',   label:'📊 Overview',          color:''}
-  ],
-  compliance: [
-    {id:'overview',   label:'🛡 Security Overview',  color:'#ef4444'}
-  ],
   scicomp: [
-    {id:'scientific', label:'🔬 Scientific SW',      color:'#2dd4bf'},
-    {id:'inventory',  label:'📋 SW Compliance',      color:'#38bdf8'}
+    {id:'scientific', label:'🔬 SW Inventory',       color:'#2dd4bf'},
+    {id:'inventory',  label:'📋 SW Comparison',      color:'#38bdf8'}
+  ],
+  dashboard: [
+    {id:'overview',   label:'🛡 SW Compliance',      color:'#ef4444'}
   ],
   data: [
     {id:'assets',     label:'🖥 Asset List',          color:''},
@@ -3539,8 +3538,8 @@ function switchTabFromSub(name, el){
 
 // Init: render dashboard sub-nav on load
 document.addEventListener('DOMContentLoaded', ()=>{
-  const firstTopBtn = document.getElementById('ntb-dashboard');
-  if(firstTopBtn) switchTopNav('dashboard', firstTopBtn);
+  const firstTopBtn = document.getElementById('ntb-scicomp');
+  if(firstTopBtn) switchTopNav('scicomp', firstTopBtn);
 });
 
 // ── Merged SW Compliance tab — unified filter handlers ─────────
@@ -4307,7 +4306,19 @@ function showProhibitedDrilldown(){ openDetailModal('SW'); }
 function exportProhibitedDrilldownCSV(){ exportDetailModalCSV(); }
 
 // ── Manage Scientific Software Panel ─────────────────────────
-let _activeSciIds=new Set(['stata','spss','sas','nvivo']);
+// Load saved default from localStorage, fall back to built-in default
+const SCI_APPS_BUILTIN_DEFAULT = ['stata','spss','sas','nvivo'];
+function _loadSavedSciDefault(){
+  try {
+    const saved = localStorage.getItem('sci_apps_default');
+    if(saved){
+      const ids = JSON.parse(saved);
+      if(Array.isArray(ids) && ids.length) return new Set(ids);
+    }
+  } catch(e){}
+  return new Set(SCI_APPS_BUILTIN_DEFAULT);
+}
+let _activeSciIds = _loadSavedSciDefault();
 function getAllSciOptions(){ return INV_SW_GROUPS.filter(g=>g.licensed); }
 
 function openSciManagePanel(){
@@ -4359,20 +4370,36 @@ function toggleSciApp(id){
   else{_activeSciIds.add(id);}
   renderSciManageList();
 }
-const SCI_APPS_DEFAULT = ['stata','spss','sas','nvivo'];
+function getSciAppsDefault(){ try{ const s=localStorage.getItem('sci_apps_default'); if(s){ const ids=JSON.parse(s); if(Array.isArray(ids)&&ids.length) return ids; } }catch(e){} return SCI_APPS_BUILTIN_DEFAULT; }
 
+function getFilteredSciOptions(){
+  const search = document.getElementById('sci-manage-search')?.value.toLowerCase() || '';
+  const licF = document.getElementById('sci-manage-lic-filter')?.value || 'ALL';
+  return getAllSciOptions().filter(g =>
+    (!search || g.label.toLowerCase().includes(search) || (g.pub||'').toLowerCase().includes(search)) &&
+    (licF === 'ALL' || g.lic === licF)
+  );
+}
 function selectAllSciApps(){
-  getAllSciOptions().forEach(g => _activeSciIds.add(g.id));
+  // Only select software matching current search + license filter
+  getFilteredSciOptions().forEach(g => _activeSciIds.add(g.id));
   renderSciManageList();
 }
 function clearAllSciApps(){
-  _activeSciIds.clear();
-  // keep at least one to avoid empty state
+  // Only clear software matching current search + license filter
+  getFilteredSciOptions().forEach(g => _activeSciIds.delete(g.id));
   renderSciManageList();
 }
 function resetSciAppsToDefault(){
-  _activeSciIds = new Set(SCI_APPS_DEFAULT);
+  _activeSciIds = new Set(getSciAppsDefault());
   renderSciManageList();
+}
+function saveAsDefaultSciApps(){
+  try{
+    localStorage.setItem('sci_apps_default', JSON.stringify([..._activeSciIds]));
+    const btn = document.getElementById('sci-save-default-btn');
+    if(btn){ btn.textContent='✓ Saved!'; btn.style.color='#22c55e'; btn.style.borderColor='rgba(34,197,94,0.4)'; setTimeout(()=>{ btn.textContent='⭐ Save as Default'; btn.style.color=''; btn.style.borderColor=''; },2000); }
+  } catch(e){ alert('Could not save — localStorage may be disabled.'); }
 }
 
 function applyAndCloseSciManage(){
@@ -4460,8 +4487,8 @@ function applyAndCloseSciManage(){
   <div style="max-width:760px;margin:0 auto;background:var(--surface);border:1px solid var(--border);border-radius:18px;overflow:hidden">
     <div style="display:flex;align-items:center;justify-content:space-between;padding:18px 24px;border-bottom:1px solid var(--border)">
       <div>
-        <h2 style="font-size:15px;font-weight:700;color:#2dd4bf">⚙ Manage Scientific Software</h2>
-        <p style="font-size:11px;color:var(--muted);margin-top:3px">Toggle which software appear as inventory cards and in compliance tracking</p>
+        <h2 style="font-size:15px;font-weight:700;color:#2dd4bf">⚙ Manage Software</h2>
+        <p style="font-size:11px;color:var(--muted);margin-top:3px">Toggle which software appear as inventory cards and in compliance tracking · Select All and Clear All respect the active filter</p>
       </div>
       <button onclick="closeSciManagePanel()" style="font-size:11px;padding:6px 14px;border-radius:8px;border:1px solid var(--border2);background:var(--surface2);color:var(--muted);cursor:pointer">✕ Close</button>
     </div>
@@ -4488,6 +4515,7 @@ function applyAndCloseSciManage(){
         <button onclick="selectAllSciApps()" style="font-size:10px;padding:5px 12px;border-radius:7px;border:1px solid var(--border2);background:var(--surface2);color:var(--text-dim);cursor:pointer;font-weight:600">☑ Select All</button>
         <button onclick="clearAllSciApps()" style="font-size:10px;padding:5px 12px;border-radius:7px;border:1px solid var(--border2);background:var(--surface2);color:var(--muted);cursor:pointer;font-weight:600">☐ Clear All</button>
         <button onclick="resetSciAppsToDefault()" style="font-size:10px;padding:5px 12px;border-radius:7px;border:1px solid rgba(245,158,11,0.3);background:rgba(245,158,11,0.07);color:#f59e0b;cursor:pointer;font-weight:600">↺ Reset Default</button>
+        <button id="sci-save-default-btn" onclick="saveAsDefaultSciApps()" style="font-size:10px;padding:5px 12px;border-radius:7px;border:1px solid rgba(99,102,241,0.3);background:rgba(99,102,241,0.07);color:#818cf8;cursor:pointer;font-weight:600">⭐ Save as Default</button>
       </div>
       <button onclick="applyAndCloseSciManage()" style="font-size:12px;padding:7px 20px;border-radius:8px;border:none;background:#2dd4bf;color:#000;cursor:pointer;font-weight:700">✓ Apply</button>
     </div>
