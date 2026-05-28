@@ -657,8 +657,8 @@ tr.total-row td{font-weight:700;background:var(--surface2);color:var(--blue)}
     </div>
     <div class="sci-topbar">
       <div class="sci-topbar-left">
-        <h3>🔬 Scientific Software Inventory</h3>
-        <p>Detects from <strong style="color:#2dd4bf">Software Group = "Others"</strong> only · Stata · GraphPad Prism · SnapGene · FlowJo · Geneious Prime · Partek Genomics Suite · NVivo</p>
+        <h3>🔬 Software Inventory</h3>
+        <p id="sci-inv-subtitle">Detects: <strong style="color:#2dd4bf">Stata · IBM SPSS Statistics · SAS · NVivo</strong></p>
       </div>
       <div style="display:flex;gap:8px;align-items:center">
         <button class="btn" onclick="openSciManagePanel()" style="font-size:11px;padding:6px 14px;border-radius:8px;border:1px solid #1e3a5c;background:rgba(56,189,248,0.07);color:#38bdf8;cursor:pointer;font-weight:600">⚙ Manage Software</button>
@@ -1012,7 +1012,7 @@ const INV_SW_GROUPS=[
   {id:'bartender',  label:'BarTender',                   kw:['bartender'],                       licensed:true,pub:'Seagull Scientific',lic:'commercial'},
   {id:'camtasia',   label:'Camtasia',                    kw:['camtasia'],                        licensed:true,pub:'TechSmith',lic:'subscription'},
   {id:'filmora',    label:'Filmora',                     kw:['filmora'],                         licensed:true,pub:'Wondershare',lic:'freemium'},
-  {id:'adobe',      label:'Adobe Creative Cloud',        kw:['adobe creative','adobe acrobat'],  licensed:true,pub:'Adobe Inc.',lic:'subscription'},
+  {id:'adobe',      label:'Adobe Creative Cloud',        scanAllGroups:true,kw:['adobe creative','adobe acrobat','adobe photoshop','adobe illustrator','adobe premiere','adobe after effects','adobe indesign','adobe lightroom','adobe dreamweaver','adobe animate','adobe audition','adobe bridge','adobe dimension','adobe fresco','adobe xd','adobe media encoder','adobe substance','adobe incopy','adobe character animator','adobe acrobat dc','adobe acrobat pro','adobe reader','adobe air','adobe flash','adobe shockwave','adobe connect','adobe captivate','adobe robohelp','adobe framemaker','adobe dc ','acrobat dc','acrobat pro','acrobat reader','creative cloud'],  licensed:true,pub:'Adobe Inc.',lic:'subscription'},
   {id:'chemdraw',   label:'ChemDraw',                    kw:['chemdraw'],                        licensed:true,pub:'PerkinElmer / Revvity',lic:'subscription'},
   {id:'articulate', label:'Articulate 360',              kw:['articulate'],                      licensed:true,pub:'Articulate Global',lic:'subscription'},
   {id:'ispring',    label:'iSpring',                     kw:['ispring'],                         licensed:true,pub:'iSpring Solutions',lic:'subscription'},
@@ -1177,9 +1177,15 @@ function fg(row,col){
   const nc=n(col);
   // Try exact normalised match first
   let key=Object.keys(row).find(k=>n(k)===nc);
-  // Fallback aliases: 'Staff ID' ↔ 'NUS-ID'
+  // Fallback aliases
   if(!key){
-    const aliases={'staffid':['nusid','nusid'],'nusid':['staffid']};
+    const aliases={
+      'staffid':['nusid','nus-id','staffid','staff_id','userid','user id'],
+      'nusid':['staffid','staff id','staff_id','userid'],
+      'hwserialnumber':['serialnumber','serialno','serial','serialnum','hwserial','deviceserial','sn','assettag','asset tag','assetnumber','asset number','bios serial','biosserialnumber'],
+      'computername':['devicename','hostname','machinename','pcname','computer'],
+      'softwaregroup':['swgroup','appgroup','applicationgroup','group','category'],
+    };
     const fallbacks=aliases[nc]||[];
     key=Object.keys(row).find(k=>fallbacks.includes(n(k)));
   }
@@ -1349,9 +1355,12 @@ async function runConsolidation(){
 function buildDevices(){
   const map=new Map();
   rawRows.forEach(row=>{
-    const serial=row['HW Serial Number']||row['Staff ID'];
-    if(!serial) return;
-    const key=serial;
+    const serial=(row['HW Serial Number']||'').trim();
+    const staffId=(row['Staff ID']||'').trim();
+    if(!serial && !staffId) return;
+    // Key: prefer serial (unique per device); fall back to staffId only if no serial
+    // If same staff has multiple devices with serials, each gets its own record
+    const key = serial || staffId;
     if(!map.has(key)){
       map.set(key,{
         nusId:row['Staff ID'],
@@ -1367,7 +1376,8 @@ function buildDevices(){
         badApps:[],
         blacklistedVPNs:[],
         sciSW:{},
-        othersSwList:[]
+        othersSwList:[],
+        allSwList:[]
       });
     }
     const d=map.get(key);
@@ -1389,11 +1399,16 @@ function buildDevices(){
         d.blacklistedVPNs.push(swName);
     }
 
-    // Scientific SW detection (Others group only)
-    if(swGroupLower==='others'&&swName){
-      if(!d.othersSwList.includes(swName)) d.othersSwList.push(swName);
+    // Scientific SW detection
+    // Apps with scanAllGroups:true scan every software group; others restrict to "Others" only
+    if(swName){
+      const inSciGroup = swGroupLower==='others' || swGroupLower==='standard';
+      if(inSciGroup && !d.othersSwList.includes(swName))
+        d.othersSwList.push(swName);
+      if(!d.allSwList.includes(swName)) d.allSwList.push(swName);
       SCI_APPS.forEach(app=>{
-        if(app.keywords.some(k=>sw.includes(k))){
+        const inScope = app.scanAllGroups || inSciGroup;
+        if(inScope && app.keywords.some(k=>sw.includes(k))){
           if(!d.sciSW[app.id]) d.sciSW[app.id]=[];
           if(!d.sciSW[app.id].includes(swName)) d.sciSW[app.id].push(swName);
         }
@@ -1581,7 +1596,7 @@ ${v} (${pct}%)`;
   if(s.noAv>0) ins.push({t:'critical',i:'🛡',tx:`<strong>${Math.round(s.noAv/(s.t||1)*100)}% of fleet</strong> (${s.noAv} devices) running without antivirus.`});
   if(s.vpn>0) ins.push({t:'warning',i:'🔒',tx:`<strong>${s.vpn} device${s.vpn>1?'s':''}</strong> with non-compliant VPN detected.`});
   if(appEntries.length) ins.push({t:'warning',i:'📦',tx:`Most common violation: <strong>${appEntries[0][0]}</strong> on ${appEntries[0][1]} device${appEntries[0][1]>1?'s':''}.`});
-  if(s.sci>0) ins.push({t:'good',i:'🔬',tx:`<strong>${s.sci} device${s.sci>1?'s':''}</strong> have scientific software installed (from Software Group = Others).`});
+  if(s.sci>0) ins.push({t:'good',i:'🔬',tx:`<strong>${s.sci} device${s.sci>1?'s':''}</strong> have scientific software installed.`});
   if(s.ok===s.t&&s.t>0) ins.push({t:'good',i:'✓',tx:`<strong>All devices compliant</strong> — no AV gap, prohibited apps, or VPN issues detected.`});
   if(!ins.length) ins.push({t:'good',i:'✓',tx:'<strong>Fleet looks healthy.</strong> No critical risk indicators detected.'});
   document.getElementById('insights').innerHTML=ins.map(x=>`
@@ -1937,6 +1952,15 @@ function renderSciTab(){
   const uniqueOffices=new Set(sciDevices.map(d=>d.office)).size;
 
   // ── KPI Cards per app
+  // Update subtitle to reflect active apps and their scan scope
+  const _allGroups = SCI_APPS.filter(a=>a.scanAllGroups).map(a=>a.label);
+  const _othersOnly = SCI_APPS.filter(a=>!a.scanAllGroups).map(a=>a.label);
+  const _subParts = [];
+  if(_othersOnly.length) _subParts.push(`<strong style="color:#2dd4bf">${_othersOnly.join(' · ')}</strong> <span style="color:var(--muted)">(Software Groups: Others + Standard)</span>`);
+  if(_allGroups.length) _subParts.push(`<strong style="color:#f59e0b">${_allGroups.join(' · ')}</strong> <span style="color:var(--muted)">(all software groups)</span>`);
+  const _subEl = document.getElementById('sci-inv-subtitle');
+  if(_subEl) _subEl.innerHTML = 'Detects: ' + (_subParts.join(' &nbsp;·&nbsp; ') || '—');
+
   document.getElementById('sci-kpi-grid').innerHTML=SCI_APPS.map(app=>`
     <div class="sci-kpi-card ${sciActiveFilter===app.id?'active-sci':''}" style="--sci-color:${app.color}" onclick="setSciFilter('${app.id}',this)">
       <div class="sci-kpi-label">${app.label}</div>
@@ -4335,6 +4359,22 @@ function toggleSciApp(id){
   else{_activeSciIds.add(id);}
   renderSciManageList();
 }
+const SCI_APPS_DEFAULT = ['stata','spss','sas','nvivo'];
+
+function selectAllSciApps(){
+  getAllSciOptions().forEach(g => _activeSciIds.add(g.id));
+  renderSciManageList();
+}
+function clearAllSciApps(){
+  _activeSciIds.clear();
+  // keep at least one to avoid empty state
+  renderSciManageList();
+}
+function resetSciAppsToDefault(){
+  _activeSciIds = new Set(SCI_APPS_DEFAULT);
+  renderSciManageList();
+}
+
 function applyAndCloseSciManage(){
   const all=getAllSciOptions();
   const origIds=SCI_APPS.map(a=>a.id);
@@ -4349,18 +4389,33 @@ function applyAndCloseSciManage(){
   LICENSED_SW_LABELS.clear();
   all.filter(g=>_activeSciIds.has(g.id)).forEach(g=>LICENSED_SW_LABELS.add(g.label));
 
-  // Re-scan sciSW for every device from stored othersSwList
+  // Re-scan sciSW for every device
+  // scanAllGroups apps scan all groups; standard apps scan Others+Standard groups (cached in othersSwList)
+  const hasAllGroupApps = SCI_APPS.some(a=>a.scanAllGroups);
   devices.forEach(d=>{
     d.sciSW={};
+    // Scan othersSwList for standard apps
     (d.othersSwList||[]).forEach(swName=>{
       const sw=swName.toLowerCase();
       SCI_APPS.forEach(app=>{
-        if(app.keywords.some(k=>sw.includes(k))){
+        if(!app.scanAllGroups && app.keywords.some(k=>sw.includes(k))){
           if(!d.sciSW[app.id]) d.sciSW[app.id]=[];
           if(!d.sciSW[app.id].includes(swName)) d.sciSW[app.id].push(swName);
         }
       });
     });
+    // Scan allSwList for scanAllGroups apps
+    if(hasAllGroupApps){
+      (d.allSwList||[]).forEach(swName=>{
+        const sw=swName.toLowerCase();
+        SCI_APPS.forEach(app=>{
+          if(app.scanAllGroups && app.keywords.some(k=>sw.includes(k))){
+            if(!d.sciSW[app.id]) d.sciSW[app.id]=[];
+            if(!d.sciSW[app.id].includes(swName)) d.sciSW[app.id].push(swName);
+          }
+        });
+      });
+    }
   });
 
   closeSciManagePanel();
@@ -4428,7 +4483,12 @@ function applyAndCloseSciManage(){
     </div>
     <div id="sci-manage-list" style="padding:14px 24px 20px;display:flex;flex-direction:column;gap:6px;max-height:500px;overflow-y:auto"></div>
     <div style="padding:14px 24px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center">
-      <span id="sci-manage-count" style="font-size:11px;color:var(--muted)"></span>
+      <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
+        <span id="sci-manage-count" style="font-size:11px;color:var(--muted);margin-right:4px"></span>
+        <button onclick="selectAllSciApps()" style="font-size:10px;padding:5px 12px;border-radius:7px;border:1px solid var(--border2);background:var(--surface2);color:var(--text-dim);cursor:pointer;font-weight:600">☑ Select All</button>
+        <button onclick="clearAllSciApps()" style="font-size:10px;padding:5px 12px;border-radius:7px;border:1px solid var(--border2);background:var(--surface2);color:var(--muted);cursor:pointer;font-weight:600">☐ Clear All</button>
+        <button onclick="resetSciAppsToDefault()" style="font-size:10px;padding:5px 12px;border-radius:7px;border:1px solid rgba(245,158,11,0.3);background:rgba(245,158,11,0.07);color:#f59e0b;cursor:pointer;font-weight:600">↺ Reset Default</button>
+      </div>
       <button onclick="applyAndCloseSciManage()" style="font-size:12px;padding:7px 20px;border-radius:8px;border:none;background:#2dd4bf;color:#000;cursor:pointer;font-weight:700">✓ Apply</button>
     </div>
   </div>
